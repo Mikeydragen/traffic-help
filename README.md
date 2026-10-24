@@ -1,43 +1,55 @@
-# Optimized Route Planner for Emergency Vehicles (C++)
+# ResQRoute — Full-stack C++ Emergency Route Planner
 
-## Included DSA features
-- Dijkstra's shortest path algorithm
-- A* Search
-- Adjacency Matrix and Adjacency List graph representations
-- AVL Tree indexing hospital records by specialty
-- Performance comparison (elapsed microseconds, explored nodes, route cost)
-- Simulated traffic-time changes and road closures
-- Sample city network with hospital and patient locations
+A college-demo full-stack DSA project: C++17 HTTP API backend + HTML/CSS/JavaScript responsive frontend.
 
-> This is an educational simulation with fictional locations and travel times. It is not connected to live traffic or emergency dispatch and must not be used to direct real ambulances.
+## Features
+- Dijkstra and A* shortest-time routing
+- Adjacency matrix and adjacency list representations
+- AVL tree hospital directory indexed by specialty
+- Nearest matching hospital by simulated route time
+- Benchmark comparison: elapsed microseconds, expanded nodes, route cost
+- Simulated road-time updates API
+- Schematic interactive city map, route highlighting, responsive dashboard
+- No third-party C++ libraries required
 
-## Requirements
-- A C++17 compiler (g++/MinGW-w64 recommended) and VS Code, or Visual Studio.
-- No third-party libraries required.
+> Important: all locations and travel times are fictional. This is an academic simulation, not a live navigation service and must not be used for real emergency dispatch.
 
-## Run on Windows (VS Code terminal)
+## Windows setup (VS Code)
 1. Extract the ZIP.
-2. Open the `EmergencyRoutePlannerCpp` folder in VS Code.
-3. Open Terminal > New Terminal.
-4. Check the compiler: `g++ --version`
-5. Compile:
-   `g++ -std=c++17 -O2 -Wall -Wextra main.cpp -o route_planner.exe`
-6. Run:
-   `.\route_planner.exe`
+2. Open the `EmergencyRoutePlanner_FullStack` folder in VS Code.
+3. In the terminal, check `g++ --version`.
+4. Compile:
+   `g++ -std=c++17 -O2 -Wall -Wextra server.cpp -o server.exe -lws2_32`
+5. Run:
+   `.\server.exe`
+6. Open `http://localhost:8080` in your browser.
 
-If `g++` is not recognized, install/configure a C++ compiler such as MinGW-w64, then reopen the terminal.
+If you use Visual Studio/MSVC instead of g++, Winsock is available but compile flags differ. Recommended command above is for MinGW-w64 g++.
 
-## Menu
-1. Dijkstra using adjacency list
-2. A* using adjacency list
-3. Search hospitals by specialty using AVL Tree and route to the nearest matching one
-4. Compare Dijkstra/A* with matrix/list representations
-5. Change a road's travel time or close it (enter 0)
-6. List location IDs
+## API endpoints
+- `GET /api/locations`
+- `GET /api/route?start=0&goal=6&algorithm=dijkstra&representation=list`
+- `GET /api/route?start=0&goal=6&algorithm=astar&representation=matrix`
+- `GET /api/hospitals?specialty=cardiology`
+- `GET /api/benchmark?start=0&goal=6`
+- `POST /api/road?from=1&to=2&minutes=8` (updates simulated network; `minutes=0` closes it)
 
-## Important implementation notes
-- The city coordinates are illustrative, not GPS.
-- The A* heuristic is deliberately conservative for this sample network. For a real road network, use a lower-bound estimate of travel time, such as straight-line distance divided by a verified maximum speed, so it does not overestimate.
-- Benchmarks are small and noisy. For a meaningful report, generate larger sparse and dense graphs, run each query many times, and report averages.
-- The AVL tree stores each hospital under a composite key containing specialty, name and location. The current demonstration traverses the tree to collect all hospitals of a specialty; an optimized specialty index could store a list at each specialty key.
-- Road closures are represented by infinite travel time.
+The frontend and backend are served by the same C++ process, so no separate frontend server is required.
+
+## Folder structure
+```
+EmergencyRoutePlanner_FullStack/
+  server.cpp
+  public/
+    index.html
+    style.css
+    app.js
+  README.md
+```
+
+## DSA notes for presentation
+- Dijkstra finds shortest paths with nonnegative edge costs.
+- A* uses a heuristic to guide search. For a formal optimality guarantee, the heuristic must not overestimate the remaining travel time.
+- AVL is a self-balancing binary search tree. This demo stores hospitals using a composite specialty/name/location key and traverses the tree to collect matching specialties.
+- Matrix takes O(V^2) memory; adjacency list takes O(V+E) memory.
+- Benchmark times on a tiny graph are noisy; use larger generated graphs and repeat queries for a serious performance report.
